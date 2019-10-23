@@ -16,7 +16,7 @@ class LikePontos:
         connection.commit()
         connection.close()
 
-    def getall(self):
+    def get_all(self):
         connection = sqlite3.connect('database.db')
         cursor = connection.cursor()
 
@@ -24,3 +24,10 @@ class LikePontos:
         rows = cursor.fetchall()
 
         return rows
+    def get(self, **kwargs):
+        connection = sqlite3.connect('database.db')
+        cursor = connection.cursor()
+        for item in kwargs.keys():
+            cursor.execute('''SELECT * FROM {} WHERE {}=?'''.format(self.tabela, item), (kwargs[item]))
+            rows = cursor.fetchall()
+            return rows
