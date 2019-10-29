@@ -1,4 +1,6 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
+
+from models.usuario import Usuario
 
 import sqlite3
 
@@ -61,17 +63,48 @@ connection.commit()
 
 connection.close()
 
+
 @app.route('/')
+def main():
+    return redirect(url_for('index'))
+
+@app.route('/index')
 def index():
     return render_template('index.html')
 
-@app.route('/login')
+@app.route('/login', methods = ['POST', 'GET'])
 def login():
-    return render_template('Login.html')
+    if request.method == 'POST':
+        username = request.form['username']
+        senha = request.form['senha']
 
-@app.route('/registrar')
+        user = Usuario(tabela='usuarios', username=username, senha=senha)
+        validate = user.autenticar()
+
+        if validate:
+            return redirect(url_for('index'))
+        else:
+            return render_template('Login.html')
+    if request.method == 'GET':
+        return render_template('Login.html')
+
+
+@app.route('/registrar', methods = ['POST', 'GET'])
 def registrar():
-    return render_template('registro.html')
+    if request.method == 'POST':
+        username = request.form['username']
+        senha = request.form['senha']
+        email = request.form['email']
+
+        user = Usuario(tabela='usuarios', username=username, senha=senha, email=email)
+        validate = user.registrar()
+
+        if validate:
+            return redirect(url_for('login'))
+        else:
+            return render_template('registro.html')
+    if request.method == 'GET':
+        return render_template('registro.html')
 
 
 if __name__ == '__main__':

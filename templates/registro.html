@@ -11,13 +11,11 @@
 <body>
     <div class="login-container">
         <img src="{{ url_for('static', filename='img/logo.png') }}" alt='PausaDramatica' id="logo"></img>
-        <form>
-            <input placeholder="  Usuario" />
-            <input type="password" placeholder="  Senha" />
-            <input type="email" placeholder="  Email">
-            <button type="button">
-                <strong>Registrar</strong>
-            </button>
+        <form action="/registrar" method="POST">
+            <input placeholder="  Usuario" name="username"/>
+            <input type="password" placeholder="  Senha" name="senha"/>
+            <input type="email" placeholder="  Email" name="email">
+            <input id="button" type="submit" value="Registrar">
         </form>
     </div>
 </body>
