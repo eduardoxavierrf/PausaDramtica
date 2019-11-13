@@ -1,4 +1,4 @@
-from .models import Model
+from models.models import Model
 
 class Usuario(Model):
     def registrar(self):

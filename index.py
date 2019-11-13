@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for
 
 from models.usuario import Usuario
+from models.models import Model
+from models.ponto_turistico import PontoTuristico
 
 import sqlite3
 
@@ -8,11 +10,14 @@ app = Flask(__name__)
 
 connection = sqlite3.connect('database.db')
 
-def pesquisar_pontos():
+vLogin = 0
+usr = ''
+
+def pesquisar_pontos(pesquisa):
     global connection
     connection = sqlite3.connect('database.db')
     cursor = connection.cursor()
-    pesquisa = str(input("Digite o lugar para ver seus pontos turísticos: "))
+    #pesquisa = str(input("Digite o lugar para ver seus pontos turísticos: "))
     lista = cursor.execute(
     '''
     SELECT name, descricao FROM pontos_turisticos WHERE lugar = ''' + "'" + pesquisa + "'"
@@ -46,22 +51,7 @@ def criar_pontos():
     else:
         print("Ja existe")
 
-cursor = connection.cursor()
 
-cursor.execute(
-'''
-CREATE TABLE IF NOT EXISTS pontos_turisticos(
-    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    descricao TEXT NOT NULL,
-    lugar TEXT NOT NULL
-)
-'''
-)
-
-connection.commit()
-
-connection.close()
 
 
 @app.route('/')
@@ -70,23 +60,36 @@ def main():
 
 @app.route('/index')
 def index():
-    return render_template('index.html')
+    pontos = Model(tabela='pontos_turisticos')
+    pts = pontos.get_all()
+    print(pts)
+    return render_template('index.html', len=len(pts), pontos= pts, vLogin=vLogin, usr= usr)
 
 @app.route('/login', methods = ['POST', 'GET'])
 def login():
-    if request.method == 'POST':
-        username = request.form['username']
-        senha = request.form['senha']
+    global vLogin
+    if vLogin == 0:
+        if request.method == 'POST':
+            username = request.form['username']
+            senha = request.form['senha']
 
-        user = Usuario(tabela='usuarios', username=username, senha=senha)
-        validate = user.autenticar()
+            user = Usuario(tabela='usuarios', username=username, senha=senha)
+            validate = user.autenticar()
 
-        if validate:
-            return redirect(url_for('index'))
-        else:
+            if validate:
+                #global vLogin
+                global usr
+                usr = username
+                vLogin = 1
+                return redirect(url_for('index'))
+            else:
+                return render_template('Login.html')
+        if request.method == 'GET':
             return render_template('Login.html')
-    if request.method == 'GET':
-        return render_template('Login.html')
+    else:
+        #global vLogin
+        vLogin = 0
+        return redirect(url_for('index'))
 
 
 @app.route('/registrar', methods = ['POST', 'GET'])
@@ -106,6 +109,24 @@ def registrar():
     if request.method == 'GET':
         return render_template('registro.html')
 
+@app.route('/criar', methods = ['POST', 'GET'])
+def criar():
+    if request.method == 'POST':
+        name = request.form['name']
+        descricao = request.form['descricao']
+        lugar = request.form['lugar']
+
+        user = PontoTuristico(tabela='pontos_turisticos', name=name, imagem="a", descricao=descricao, lugar=lugar)
+        validate = user.criarPonto()  
+
+        if validate:
+            return redirect(url_for('index'))
+        else:
+            return render_template('criar.html')
+    if request.method == 'GET':
+        return render_template('criar.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
+

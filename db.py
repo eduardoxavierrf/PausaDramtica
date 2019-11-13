@@ -12,3 +12,21 @@ CREATE TABLE IF NOT EXISTS usuarios(
 )
 '''
 )
+
+cursor = connection.cursor()
+
+cursor.execute(
+'''
+CREATE TABLE IF NOT EXISTS pontos_turisticos(
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    imagem TEXT NOT NULL,
+    descricao TEXT NOT NULL,
+    lugar TEXT NOT NULL
+)
+'''
+)
+
+connection.commit()
+
+connection.close()
