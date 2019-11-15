@@ -63,9 +63,7 @@
               <div id="myDropdown" class="dropdown-content">
                 <a href="/login">Logout</a>
                 <a href="#">Ver perfil</a>
-                {%if usrList[0][4] == 'Guia' %}
-                <a href="/oferecer">Oferecer passeio</a>
-                {%endif%}
+                <a href="#">blabla</a>
               </div>
             </div>
             
@@ -101,12 +99,11 @@
     </header>
     <div class="main-container">
         <ul>
-            {%for i in range(len)%} 
-            <a href="/{{pontos[i][1]}}"><li>
+            <li>
                 <img src="http://visit.rio/wp-content/uploads/2015/08/6025941768_8bdcc85c73_o-500x500.jpg" alt="" />
                 <footer>
-                  <strong>{{pontos[i][1]}}</strong>
-                    <p>{{pontos[i][2]}}</p></form>
+                  <strong>{{pontos[0][1]}}</strong>
+                    <p>{{pontos[0][2]}}</p></form>
                 </footer>
 
                 <div class="buttons">
@@ -118,15 +115,23 @@
                     </button>
 
                 </div>
-            </li></a>
-        {%endfor%} 
-             <li>
-                <div class="add">
-                    <a href="/criar">
-                        <img src="{{ url_for('static', filename='img/add.svg') }}" />
-                    </a>
-                </div>
             </li>
+            {%if len == 0%}
+            <li>
+                <footer>
+                    <strong>Sem passeios</strong>
+                </footer>
+            </li>
+            {%else%}
+            {%for i in range(len)%}
+            <li>
+                <footer>
+                    <strong>{{dados[i][1]}}</strong>
+                    <p>Data: {{dados[i][3]}}</p>
+                </footer>
+            </li>
+            {%endfor%}
+            {%endif%}
         </ul>
     </div>
 </body>

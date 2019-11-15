@@ -37,8 +37,8 @@ class Model:
         cursor.execute('''SELECT * FROM {}'''.format(self.tabela))
         rows = cursor.fetchall()
         connection.close()
-
         return rows
+
     def get(self, **kwargs):
         connection = sqlite3.connect('database.db')
         cursor = connection.cursor()

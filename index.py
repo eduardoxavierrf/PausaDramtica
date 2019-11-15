@@ -3,16 +3,16 @@ from flask import Flask, render_template, request, redirect, url_for
 from models.usuario import Usuario
 from models.models import Model
 from models.ponto_turistico import PontoTuristico
+from models.passeio import Passeio
 
 import sqlite3
 
 app = Flask(__name__)
 
-connection = sqlite3.connect('database.db')
-
 vLogin = 0
 usr = ''
-
+usrList = ''
+"""
 def pesquisar_pontos(pesquisa):
     global connection
     connection = sqlite3.connect('database.db')
@@ -50,8 +50,7 @@ def criar_pontos():
         print("Ponto criado")
     else:
         print("Ja existe")
-
-
+"""
 
 
 @app.route('/')
@@ -63,7 +62,7 @@ def index():
     pontos = Model(tabela='pontos_turisticos')
     pts = pontos.get_all()
     print(pts)
-    return render_template('index.html', len=len(pts), pontos= pts, vLogin=vLogin, usr= usr)
+    return render_template('index.html', len=len(pts), pontos= pts, vLogin=vLogin, usr= usr, usrList=usrList)
 
 @app.route('/login', methods = ['POST', 'GET'])
 def login():
@@ -79,7 +78,10 @@ def login():
             if validate:
                 #global vLogin
                 global usr
+                global usrList
                 usr = username
+                usuario = Model(tabela='usuarios')
+                usrList = usuario.get(username=username)
                 vLogin = 1
                 return redirect(url_for('index'))
             else:
@@ -98,8 +100,9 @@ def registrar():
         username = request.form['username']
         senha = request.form['senha']
         email = request.form['email']
+        tipo = request.form['tipo']
 
-        user = Usuario(tabela='usuarios', username=username, senha=senha, email=email)
+        user = Usuario(tabela='usuarios', username=username, senha=senha, email=email, tipo=tipo)
         validate = user.registrar()
 
         if validate:
@@ -126,6 +129,30 @@ def criar():
     if request.method == 'GET':
         return render_template('criar.html')
 
+@app.route('/<name>', methods = ['POST', 'GET'])
+def ponto(name):
+    ponto = Model(tabela='pontos_turisticos')
+    pt = ponto.get(name=name)
+    passeio = Model(tabela='passeios')
+    dados = passeio.get(ponto=name)
+    return render_template('ponto.html', len=len(dados), dados=dados, pontos= pt, vLogin=vLogin, usr= usr, usrList=usrList)
+
+@app.route('/oferecer', methods = ['POST', 'GET'])
+def oferecer():
+    if request.method == 'POST':
+        ponto = request.form['ponto']
+        data = request.form['data']
+        guia=usr
+
+        user = Passeio(tabela='passeios', guia=guia, ponto=ponto, data=data)
+        validate = user.oferecerPasseio()  
+
+        if validate:
+            return redirect(url_for('index'))
+        else:
+            return render_template('oferecer.html')
+    if request.method == 'GET':
+        return render_template('oferecer.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
