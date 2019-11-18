@@ -98,6 +98,27 @@
         <button>Entrar</button>
         <button>Registrar</button>
         -->
+        <div class="topnav">
+          <div class="search-container">
+              <style> 
+                  input[type=text] {
+                    width: 100%;
+                    box-sizing: border-box;
+                    border: 2px solid #ccc;
+                    border-radius: 4px;
+                    font-size: 16px;
+                    background-color: white;
+                    background-image: url('static/img/pesquisa.png');
+                    background-position: 10px 10px; 
+                    background-repeat: no-repeat;
+                    padding: 12px 20px 12px 40px;
+                  }
+                  </style>                  
+             <form action="/pesquisa" method="POST">
+             <input type="text" placeholder="Pesquisar locais" name="Local">
+             </form>
+         </div>
+      </div>
     </header>
     <div class="main-container">
         <ul>

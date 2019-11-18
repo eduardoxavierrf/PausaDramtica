@@ -12,6 +12,7 @@ app = Flask(__name__)
 vLogin = 0
 usr = ''
 usrList = ''
+resultado = ''
 """
 def pesquisar_pontos(pesquisa):
     global connection
@@ -57,11 +58,21 @@ def criar_pontos():
 def main():
     return redirect(url_for('index'))
 
+@app.route('/pesquisa', methods=['POST', 'GET'])
+def search():
+    if request.method == 'POST':
+        global resultado
+        local = request.form['Local']
+        busca = Model(tabela='pontos_turisticos')
+        resultado = busca.get(lugar = local)
+        return redirect(url_for('index'))
+
 @app.route('/index')
 def index():
     pontos = Model(tabela='pontos_turisticos')
     pts = pontos.get_all()
-    print(pts)
+    if len(resultado) != 0:
+        pts = resultado
     return render_template('index.html', len=len(pts), pontos= pts, vLogin=vLogin, usr= usr, usrList=usrList)
 
 @app.route('/login', methods = ['POST', 'GET'])
