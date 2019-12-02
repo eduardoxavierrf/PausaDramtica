@@ -90,7 +90,15 @@ header button{
     grid-template-columns: repeat(2, 1fr);
     grid-gap: 10px;
 }
-
+.main-container ul li .buttons form button {
+    height: 50px;
+    width: 100%;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.05);
+    border: 0;
+    border-radius: 4px;
+    background: #ffa802;
+    cursor: pointer; 
+}
 
 .main-container ul li .buttons button {
     height: 50px;
@@ -114,4 +122,3 @@ header button{
     background: #ffa802;
     cursor: pointer; 
 }
-

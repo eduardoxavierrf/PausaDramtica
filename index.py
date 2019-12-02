@@ -4,6 +4,7 @@ from models.usuario import Usuario
 from models.models import Model
 from models.ponto_turistico import PontoTuristico
 from models.passeio import Passeio
+import sqlite3
 
 import sqlite3
 
@@ -66,6 +67,44 @@ def search():
         busca = Model(tabela='pontos_turisticos')
         resultado = busca.get(lugar = local)
         return redirect(url_for('index'))
+
+@app.route('/like', methods=['POST'])
+def like():
+    if request.method == 'POST':
+        ponto = request.form['pontolike']
+        busca = Model(tabela='pontos_turisticos')
+        resultado = busca.get(name=ponto)
+        like = resultado[0][5] + 1
+        connection = sqlite3.connect('database.db')
+        cursor = connection.cursor()
+        cursor.execute(
+        '''
+        UPDATE pontos_turisticos set like=? where name=?
+        ''', (like, ponto)
+        )
+        connection.commit()
+
+        connection.close()
+        return redirect(url_for('index'))
+@app.route('/dislike', methods=['POST'])
+def dislike():
+    if request.method == 'POST':
+        ponto = request.form['pontodislike']
+        busca = Model(tabela='pontos_turisticos')
+        resultado = busca.get(name=ponto)
+        dislike = resultado[0][6] + 1
+        connection = sqlite3.connect('database.db')
+        cursor = connection.cursor()
+        cursor.execute(
+        '''
+        UPDATE pontos_turisticos set dislike=? where name=?
+        ''', (dislike, ponto)
+        )
+        connection.commit()
+
+        connection.close()
+        return redirect(url_for('index'))
+
 
 @app.route('/index')
 def index():
@@ -130,7 +169,7 @@ def criar():
         descricao = request.form['descricao']
         lugar = request.form['lugar']
 
-        user = PontoTuristico(tabela='pontos_turisticos', name=name, imagem="a", descricao=descricao, lugar=lugar)
+        user = PontoTuristico(tabela='pontos_turisticos', name=name, imagem="a", descricao=descricao, lugar=lugar, like=0, dislike=0)
         validate = user.criarPonto()  
 
         if validate:

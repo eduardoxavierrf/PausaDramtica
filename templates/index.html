@@ -129,15 +129,21 @@
                   <strong>{{pontos[i][1]}}</strong>
                     <p>{{pontos[i][2]}}</p></form>
                 </footer>
-
                 <div class="buttons">
-                    <button type="button">
+                  <form action="/like" method="POST">
+                    <input type="hidden" name="pontolike" value="{{pontos[i][1]}}">
+                    <button type="submit">
                         <img src="{{ url_for('static', filename='img/salvar.svg') }}" />
+                        <strong>{{pontos[i][5]}}</strong>
                     </button>
-                    <button type="button">
+                  </form>
+                  <form action="/dislike" method="POST">
+                    <input type="hidden" name="pontodislike" value="{{pontos[i][1]}}">
+                    <button type="submit">
                         <img src="{{ url_for('static', filename='img/like.svg') }}" />
+                        <strong>{{pontos[i][6]}}</strong>
                     </button>
-
+                  </form>
                 </div>
             </li></a>
         {%endfor%} 

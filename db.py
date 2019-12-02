@@ -21,7 +21,9 @@ CREATE TABLE IF NOT EXISTS pontos_turisticos(
     name TEXT NOT NULL,
     descricao TEXT NOT NULL,
     lugar TEXT NOT NULL,
-    imagem TEXT NOT NULL
+    imagem TEXT NOT NULL,
+    like INTEGER,
+    dislike INTEGER
 )
 '''
 )
@@ -33,6 +35,15 @@ CREATE TABLE IF NOT EXISTS passeios(
     guia TEXT NOT NULL,
     ponto TEXT NOT NULL,
     data TEXT NOT NULL
+)
+'''
+)
+cursor.execute(
+'''
+CREATE TABLE like(
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    id_usuarios INTEGER,
+    id_ponto INTEGER
 )
 '''
 )

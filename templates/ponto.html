@@ -101,20 +101,13 @@
         <ul>
             <li>
                 <img src="http://visit.rio/wp-content/uploads/2015/08/6025941768_8bdcc85c73_o-500x500.jpg" alt="" />
+                {%if pontos%}
                 <footer>
                   <strong>{{pontos[0][1]}}</strong>
                     <p>{{pontos[0][2]}}</p></form>
                 </footer>
+                {%endif%}
 
-                <div class="buttons">
-                    <button type="button">
-                        <img src="{{ url_for('static', filename='img/salvar.svg') }}" />
-                    </button>
-                    <button type="button">
-                        <img src="{{ url_for('static', filename='img/like.svg') }}" />
-                    </button>
-
-                </div>
             </li>
             {%if len == 0%}
             <li>
