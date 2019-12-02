@@ -40,10 +40,14 @@ CREATE TABLE IF NOT EXISTS passeios(
 )
 cursor.execute(
 '''
-CREATE TABLE like(
+CREATE TABLE IF NOT EXISTS like(
     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    id_usuarios INTEGER,
-    id_ponto INTEGER
+    id_usuarios INTEGER NOT NULL,
+    id_ponto INTEGER NOT NULL,
+    likeOrDislike INTEGER NOT NULL,
+
+    FOREIGN KEY (id_usuarios) REFERENCES usuarios(id),
+    FOREIGN KEY (id_ponto) REFERENCES pontos_turisticos(id)
 )
 '''
 )
