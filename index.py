@@ -75,22 +75,56 @@ def like():
         id_ponto = int(request.form['id_ponto'])
         busca = Model(tabela='pontos_turisticos')
         resultado = busca.get(name=ponto)
-        tabelaDislike = Model(tabela='like', id_usuarios= usrList[0][0], id_ponto= id_ponto, likeOrDislike= 0)
-        tabelaDislike.save()
-        print(tabelaDislike.get(id_usuarios= usrList[0][0]))
-        if not tabelaDislike.get(id_usuarios= usrList[0][0]):
+
+        connection = sqlite3.connect('database.db')
+        cursor = connection.cursor()
+        cursor.execute(
+        '''
+        SELECT * FROM like WHERE id_ponto=? AND id_usuarios=? AND likeOrDislike=0
+        ''', (id_ponto, usrList[0][0])
+        )
+        lista1 = cursor.fetchall()
+        connection.close()
+        connection = sqlite3.connect('database.db')
+        cursor = connection.cursor()
+        cursor.execute(
+        '''
+        SELECT * FROM like WHERE id_ponto=? AND id_usuarios=? AND likeOrDislike=1
+        ''', (id_ponto, usrList[0][0])
+        )
+        lista = cursor.fetchall()
+        connection.commit()
+        connection.close()
+        
+        if len(lista) == 0:
             like = resultado[0][5] + 1
+            dislike = resultado[0][6]
+            if len(lista1) != 0:
+                dislike = resultado[0][6] - 1
+                connection = sqlite3.connect('database.db')
+                cursor = connection.cursor()
+                cursor.execute(
+                '''
+                UPDATE like SET likeOrDislike=1 WHERE id_ponto=? AND id_usuarios=?
+                ''', (id_ponto, usrList[0][0])
+                )
+                connection.commit()
+                connection.close()
+            else:
+                tabelaDislike = Model(tabela='like', id_usuarios= usrList[0][0], id_ponto= id_ponto, likeOrDislike= 1)
+                tabelaDislike.save()
+
             connection = sqlite3.connect('database.db')
             cursor = connection.cursor()
             cursor.execute(
             '''
-            UPDATE pontos_turisticos set like=? where name=?
-            ''', (like, ponto)
+            UPDATE pontos_turisticos set like=?, dislike=? where name=?
+            ''', (like, dislike, ponto)
             )
             connection.commit()
-
             connection.close()
         return redirect(url_for('index'))
+
 @app.route('/dislike', methods=['POST'])
 def dislike():
     if request.method == 'POST':
@@ -98,21 +132,49 @@ def dislike():
         id_ponto = int(request.form['id_ponto'])
         busca = Model(tabela='pontos_turisticos')
         resultado = busca.get(name=ponto)
-        if not tabelaDislike.get(id_usuarios=usrList[0][0]):
-            tabelaDislike = Model(tabela='like', id_usuarios= usrList[0][0], id_ponto= id_ponto, likeOrDislike= 0)
-            tabelaDislike.save()
-            dislike = resultado[0][6] + 1
-            print(usrList[0][0])
+
+        connection = sqlite3.connect('database.db')
+        cursor = connection.cursor()
+        lista1 = cursor.execute(
+        '''
+        SELECT * FROM like WHERE id_ponto=? AND id_usuarios=? AND likeOrDislike=0
+        ''', (id_ponto, usrList[0][0])
+        ).fetchall()
+        lista = cursor.execute(
+        '''
+        SELECT * FROM like WHERE id_ponto=? AND id_usuarios=? AND likeOrDislike=1
+        ''', (id_ponto, usrList[0][0])
+        ).fetchall()
+        connection.commit()
+        connection.close()
         
+        if len(lista1) == 0:
+
+            dislike = resultado[0][6] + 1
+            like = resultado[0][5]
+            if len(lista) != 0:
+                like = resultado[0][5] - 1
+                connection = sqlite3.connect('database.db')
+                cursor = connection.cursor()
+                cursor.execute(
+                '''
+                UPDATE like SET likeOrDislike=0 WHERE id_ponto=? AND id_usuarios=?
+                ''', (id_ponto, usrList[0][0])
+                )
+                connection.commit()
+                connection.close()
+            else:
+                tabelaDislike = Model(tabela='like', id_usuarios= usrList[0][0], id_ponto= id_ponto, likeOrDislike= 0)
+                tabelaDislike.save()
+            print(usrList[0][0])
             connection = sqlite3.connect('database.db')
             cursor = connection.cursor()
             cursor.execute(
             '''
-            UPDATE pontos_turisticos set dislike=? where name=?
-            ''', (dislike, ponto)
+            UPDATE pontos_turisticos set like=?, dislike=? where name=?
+            ''', (like, dislike, ponto)
             )
             connection.commit()
-
             connection.close()
         return redirect(url_for('index'))
 
