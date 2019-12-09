@@ -12,7 +12,10 @@ class Usuario(Model):
 
     def autenticar(self):
         user = self.get(username=self.username)
-        if user[0][3]== self.senha:
-            return True
+        if len(user) != 0:
+            if user[0][3]== self.senha:
+                return True
+            else:
+                return False
         else:
             return False

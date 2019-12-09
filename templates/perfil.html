@@ -123,7 +123,10 @@
     </header>
     <div class="main-container">
         <ul>
-            {%for i in range(len)%} 
+            {%for j in range(len1)%}
+            {%for i in range(len)%}
+            {%if pontos[i][0] == b[j][2]%}
+            {%if b[j][3] == 1%} 
             <a href="/{{pontos[i][1]}}"><li>
                 <img src="http://visit.rio/wp-content/uploads/2015/08/6025941768_8bdcc85c73_o-500x500.jpg" alt="" />
                 <footer>
@@ -151,14 +154,10 @@
                 </div>
                 {%endif%}
             </li></a>
+            {%endif%}
+            {%endif%}
+            {%endfor%}
         {%endfor%} 
-             <li>
-                <div class="add">
-                    <a href="/criar">
-                        <img src="{{ url_for('static', filename='img/add.svg') }}" />
-                    </a>
-                </div>
-            </li>
         </ul>
     </div>
 </body>

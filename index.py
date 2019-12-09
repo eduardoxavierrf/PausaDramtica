@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask, render_template, request, redirect, url_for
 
 from models.usuario import Usuario
@@ -14,46 +16,6 @@ vLogin = 0
 usr = ''
 usrList = ''
 resultado = ''
-"""
-def pesquisar_pontos(pesquisa):
-    global connection
-    connection = sqlite3.connect('database.db')
-    cursor = connection.cursor()
-    #pesquisa = str(input("Digite o lugar para ver seus pontos turísticos: "))
-    lista = cursor.execute(
-    '''
-    SELECT name, descricao FROM pontos_turisticos WHERE lugar = ''' + "'" + pesquisa + "'"
-    ).fetchall()
-    connection.close()
-    return lista
-
-def criar_pontos():
-    global connection
-    connection = sqlite3.connect('database.db')
-    name = str(input("Digite o nome do ponto turistico: "))
-    descricao = str(input("Digite a descricao do ponto turistico: "))
-    lugar = str(input("Digite o lugar do ponto turistico: "))
-    cursor = connection.cursor()
-    lista = cursor.execute(
-    '''
-    SELECT name FROM pontos_turisticos WHERE name = ''' + "'" + name + "'"
-    ).fetchall()
-    connection.close()
-    if(lista == []):
-        connection = sqlite3.connect('database.db')
-        cursor = connection.cursor()
-        lista = cursor.execute(
-        '''
-        INSERT INTO pontos_turisticos(name, descricao, lugar)
-        VALUES ('''+"'"+name+"', "+"'"+descricao+"', "+"'"+lugar+"');"
-        )
-        connection.commit()
-        connection.close()
-        print("Ponto criado")
-    else:
-        print("Ja existe")
-"""
-
 
 @app.route('/')
 def main():
@@ -183,8 +145,10 @@ def dislike():
 def index():
     pontos = Model(tabela='pontos_turisticos')
     pts = pontos.get_all()
+    global resultado
     if len(resultado) != 0:
         pts = resultado
+        resultado = pontos.get_all()
     return render_template('index.html', len=len(pts), pontos= pts, vLogin=vLogin, usr= usr, usrList=usrList)
 
 @app.route('/login', methods = ['POST', 'GET'])
@@ -208,7 +172,8 @@ def login():
                 vLogin = 1
                 return redirect(url_for('index'))
             else:
-                return render_template('Login.html')
+                erro = 'Login ou senha incorretos'
+                return render_template('Login.html', erro=erro)
         if request.method == 'GET':
             return render_template('Login.html')
     else:
@@ -231,7 +196,8 @@ def registrar():
         if validate:
             return redirect(url_for('login'))
         else:
-            return render_template('registro.html')
+            erro= 'Usuario ja existe'
+            return render_template('registro.html', erro=erro)
     if request.method == 'GET':
         return render_template('registro.html')
 
@@ -241,6 +207,9 @@ def criar():
         name = request.form['name']
         descricao = request.form['descricao']
         lugar = request.form['lugar']
+        image = request.files['foto']
+        #app.config["IMAGE_UPLOADS"] = "C:\Users\cmore\Documents\env_trabalho\pausa-dramatica\static\img"
+        #image.save(os.path.join(app.config["IMAGE_UPLOADS"], image.a))
 
         user = PontoTuristico(tabela='pontos_turisticos', name=name, imagem="a", descricao=descricao, lugar=lugar, like=0, dislike=0)
         validate = user.criarPonto()  
@@ -276,6 +245,23 @@ def oferecer():
             return render_template('oferecer.html')
     if request.method == 'GET':
         return render_template('oferecer.html')
+
+@app.route('/perfil', methods = ['POST', 'GET'])
+def perfil():
+    """connection = sqlite3.connect('database.db')
+    cursor = connection.cursor()
+    lista = cursor.execute(
+    '''
+    SELECT * FROM like WHERE id_ponto=? AND id_usuarios=? AND likeOrDislike=1
+    ''', (id_ponto, usrList[0][0])
+    ).fetchall()
+    connection.commit()
+    connection.close()"""
+    a = Model(tabela='like')
+    b = a.get(id_usuarios=usrList[0][0])
+    pontos = Model(tabela='pontos_turisticos')
+    pts = pontos.get_all()
+    return render_template('perfil.html', b=b, len=len(pts), len1=len(b), pontos= pts, vLogin=vLogin, usr= usr, usrList=usrList)
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -10,6 +10,7 @@
 <body>
     <header>
         <img src="{{ url_for('static', filename='img/logo.png') }}" alt='PausaDramatica' id="logo"></img>
+        <a href='/index'><p>Home</p></a>
         {%if vLogin == 0%}
         <a href="/login"><img src="{{ url_for('static', filename='img/login1.png') }}" alt='Login' id="login"></img></a>
         {%else%}

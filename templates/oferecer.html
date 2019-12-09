@@ -10,11 +10,12 @@
 </head>
 <body>
     <div class="criar-container">
+            <a href='/index'><p>Home</p></a>
         <img src="{{ url_for('static', filename='img/logo.png') }}" alt='PausaDramatica' id="logo"></img>
         <form action="/oferecer" method="POST">
 
             <input placeholder="  Ponto turistico" name="ponto"/>
-            <input placeholder="  Data" name="data"/>
+            <input type="date" placeholder="  Data" name="data"/>
             <input id="button" type="submit" value="Enviar">
         </form>
     </div>
