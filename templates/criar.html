@@ -12,13 +12,13 @@
     <div class="criar-container">
             <a href='/index'><p>Home</p></a>
         <img src="{{ url_for('static', filename='img/logo.png') }}" alt='PausaDramatica' id="logo"></img>
-        <form action="/criar" method="POST">
+        <form action="/criar" method="POST" enctype="multipart/form-data">
 
-            <input placeholder="  Nome" name="name"/>
+            <input placeholder="  Nome" name="name" />
             <!--<input placeholder="  Descricao" name="descricao"/>-->
             <textarea name="descricao" rows="4" cols="50" placeholder=" Descricao"></textarea>
             <input placeholder="  Lugar" name="lugar"/>
-            <!--<input type="file" name="foto" accept="image/*">-->
+            <input type="file" name="foto" accept="image/*">
             <!--
             <input type="email" placeholder="  Email">
             -->

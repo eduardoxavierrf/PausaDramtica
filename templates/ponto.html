@@ -62,9 +62,11 @@
               <button onclick="myFunction()" class="dropbtn">Logado como {{usr}} ({{usrList[0][4]}})</button>
               <!--<button onclick="myFunction()" class="dropbtn"><img src="{{ url_for('static', filename='img/login1.png') }}" alt='Login' id="login" /></button>-->
               <div id="myDropdown" class="dropdown-content">
-                <a href="/login">Logout</a>
-                <a href="#">Ver perfil</a>
-                <a href="#">blabla</a>
+                  <a href="/login">Logout</a>
+                  <a href="/perfil">Ver perfil</a>
+                  {%if usrList[0][4] == 'Guia' %}
+                  <a href="/oferecer">Oferecer passeio</a>
+                  {%endif%}
               </div>
             </div>
             
@@ -101,7 +103,7 @@
     <div class="main-container">
         <ul>
             <li>
-                <img src="http://visit.rio/wp-content/uploads/2015/08/6025941768_8bdcc85c73_o-500x500.jpg" alt="" />
+                <pre><img src="{{ url_for('static', filename='img/') }}{{pontos[0][4]}} "></pre> –
                 {%if pontos%}
                 <footer>
                   <strong>{{pontos[0][1]}}</strong>
@@ -122,6 +124,9 @@
                 <footer>
                     <strong>{{dados[i][1]}}</strong>
                     <p>Data: {{dados[i][3]}}</p>
+                    {%if usrList[0][4] == 'Guia' %}
+                    <!--<a href="/adicionar">Adicionar turista</a>-->
+                   {%endif%}
                 </footer>
             </li>
             {%endfor%}

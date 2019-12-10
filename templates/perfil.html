@@ -128,7 +128,7 @@
             {%if pontos[i][0] == b[j][2]%}
             {%if b[j][3] == 1%} 
             <a href="/{{pontos[i][1]}}"><li>
-                <img src="http://visit.rio/wp-content/uploads/2015/08/6025941768_8bdcc85c73_o-500x500.jpg" alt="" />
+                <pre><img src="{{ url_for('static', filename='img/') }}{{pontos[i][4]}} "></pre> –
                 <footer>
                   <strong>{{pontos[i][1]}}</strong>
                     <p>{{pontos[i][2]}}</p></form>

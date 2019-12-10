@@ -1,5 +1,7 @@
 import os
 
+from werkzeug.utils import secure_filename
+
 from flask import Flask, render_template, request, redirect, url_for
 
 from models.usuario import Usuario
@@ -8,7 +10,7 @@ from models.ponto_turistico import PontoTuristico
 from models.passeio import Passeio
 import sqlite3
 
-import sqlite3
+
 
 app = Flask(__name__)
 
@@ -201,23 +203,49 @@ def registrar():
     if request.method == 'GET':
         return render_template('registro.html')
 
+def allowed_image(filename):
+
+    if not "." in filename:
+        return False
+
+    ext = filename.rsplit(".", 1)[1]
+
+    if ext.upper() in app.config["ALLOWED_IMAGE_EXTENSIONS"]:
+        return True
+    else:
+        return False
+
 @app.route('/criar', methods = ['POST', 'GET'])
 def criar():
+    app.config["IMAGE_UPLOADS"] = "C:/Users/cmore/Documents/env_trabalho/pausa-dramatica/static/img"
+    app.config["ALLOWED_IMAGE_EXTENSIONS"] = ["JPEG", "JPG", "PNG", "GIF"]
     if request.method == 'POST':
-        name = request.form['name']
-        descricao = request.form['descricao']
-        lugar = request.form['lugar']
-        image = request.files['foto']
-        #app.config["IMAGE_UPLOADS"] = "C:\Users\cmore\Documents\env_trabalho\pausa-dramatica\static\img"
-        #image.save(os.path.join(app.config["IMAGE_UPLOADS"], image.a))
+        if request.files:
+            name = request.form['name']
+            descricao = request.form['descricao']
+            lugar = request.form['lugar']
+            image = request.files['foto']
+            if image.filename == '':
+                return render_template('criar.html')
+            if allowed_image(image.filename):
+                if ".jpg" in image.filename:
+                    image.filename = name + '.jpg'
+                if ".jpeg" in image.filename:
+                    image.filename = name + '.jpeg'
+                if ".png" in image.filename:
+                    image.filename = name + '.png'
+                image.filename = secure_filename(image.filename)
+                image.save(os.path.join(app.config["IMAGE_UPLOADS"], image.filename))
+                
+                user = PontoTuristico(tabela='pontos_turisticos', name=name, imagem=image.filename, descricao=descricao, lugar=lugar, like=0, dislike=0)
+                validate = user.criarPonto()  
 
-        user = PontoTuristico(tabela='pontos_turisticos', name=name, imagem="a", descricao=descricao, lugar=lugar, like=0, dislike=0)
-        validate = user.criarPonto()  
-
-        if validate:
-            return redirect(url_for('index'))
-        else:
-            return render_template('criar.html')
+                if validate:
+                    return redirect(url_for('index'))
+                else:
+                    return render_template('criar.html')
+            else:
+                return render_template('criar.html')
     if request.method == 'GET':
         return render_template('criar.html')
 
@@ -248,15 +276,6 @@ def oferecer():
 
 @app.route('/perfil', methods = ['POST', 'GET'])
 def perfil():
-    """connection = sqlite3.connect('database.db')
-    cursor = connection.cursor()
-    lista = cursor.execute(
-    '''
-    SELECT * FROM like WHERE id_ponto=? AND id_usuarios=? AND likeOrDislike=1
-    ''', (id_ponto, usrList[0][0])
-    ).fetchall()
-    connection.commit()
-    connection.close()"""
     a = Model(tabela='like')
     b = a.get(id_usuarios=usrList[0][0])
     pontos = Model(tabela='pontos_turisticos')
