@@ -63,7 +63,8 @@
               <!--<button onclick="myFunction()" class="dropbtn"><img src="{{ url_for('static', filename='img/login1.png') }}" alt='Login' id="login" /></button>-->
               <div id="myDropdown" class="dropdown-content">
                 <a href="/login">Logout</a>
-                <a href="/perfil">Ver perfil</a>
+                <a href="/likes">Ver pontos com like</a>
+                <a href="/passeios">Ver passeios</a>
                 {%if usrList[0][4] == 'Guia' %}
                 <a href="/oferecer">Oferecer passeio</a>
                 {%endif%}

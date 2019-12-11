@@ -103,51 +103,48 @@
     </header>
     <div class="main-container">
         <ul>
-            <li>
-                <pre><img src="{{ url_for('static', filename='img/') }}{{pontos[0][4]}} "></pre> –
-                {%if pontos%}
-                <footer>
-                  <strong>{{pontos[0][1]}}</strong>
-                    <p>{{pontos[0][2]}}</p></form>
-                </footer>
-                {%endif%}
-
-            </li>
-            {%if len == 0%}
-            <li>
-                <footer>
-                    <strong>Sem passeios</strong>
-                </footer>
-            </li>
-            {%else%}
+            {%if usrList[0][4] == 'Guia' %}
             {%for i in range(len)%}
-            {%if d[i] == 1%}
             <li>
                 <footer>
-                    <strong>{{dados[i][1]}}</strong>
+                    <strong>{{dados[i][2]}}</strong>
                     <p>Data: {{dados[i][3]}}</p>
-                    {%if usrList%}
-                    {%if usrList[0][4] == 'Guia' %}
+                    
                     {%if usr == dados[i][1]%}
                     {%for j in range(vLen[i])%}
                     <p>{{dados1[i][j][2]}}</p>
                     
                     {%endfor%}
+                    {%if d[i] == 1%}
                     <form action="/adicionar" method="POST">
                         <input type="hidden" name="data" value="{{dados[i][3]}}">
-                        <input type="hidden" name="ponto" value="{{pontos[0][1]}}">
+                        <input type="hidden" name="ponto" value="{{dados[i][2]}}">
                         <input placeholder="  Nome do turista" name="name" />
                         <input id="button" type="submit" value="Adicionar turista">
                     </form>
-                     
+                    {%endif%}
                     </form>
-                    {%endif%}
-                    {%endif%}
+                    
                    {%endif%}
                 </footer>
             </li>
-            {%endif%}
+            
             {%endfor%}
+            {%else%}
+            {%for i in range(len)%}
+            <!---->
+            {%for j in range(lenV[i])%}
+            <li>
+                <footer>
+                    <strong>{{V[i][j][1]}}</strong>
+                    <p>Data: {{V[i][j][3]}}</p>
+                    
+                </footer>
+            </li>
+            {%endfor%}
+            <!---->
+            {%endfor%}
+            
             {%endif%}
         </ul>
     </div>

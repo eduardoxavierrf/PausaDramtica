@@ -55,13 +55,12 @@ cursor.execute(
 '''
 CREATE TABLE IF NOT EXISTS passeios1(
     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    id_guia INTEGER NOT NULL,
-    id_turista INTEGER NOT NULL,
-    id_ponto INTEGER NOT NULL,
+    id_passeio INTEGER NOT NULL,
+    name_turista TEXT NOT NULL,
+    
 
-    FOREIGN KEY (id_guia) REFERENCES usuarios(id),
-    FOREIGN KEY (id_turista) REFERENCES usuarios(id),
-    FOREIGN KEY (id_ponto) REFERENCES pontos_turisticos(id)
+    FOREIGN KEY (id_passeio) REFERENCES passeios(id),
+    FOREIGN KEY (name_turista) REFERENCES usuarios(username)
 )
 '''
 )
